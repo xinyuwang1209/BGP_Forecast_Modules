@@ -16,12 +16,12 @@ from .Conflict_Identifier   import Conflict_Identifier
 from .Prefix_Origin 		import Prefix_Origin
 from .Conflict_Classifier 	import Conflict_Classifier
 from .What_If_Analysis 	    import What_If_Analysis
-from .Database              import Database as db
-from .Utilities             import Utilities as *
+# from .Database              import Database as db
+from .Utilities             import *
 
 
-class What_If_Analysis_Evaluator(config):
-    def __init__(self,config_file='config.ini',debug=False):
+class What_If_Analysis_Evaluator():
+    def __init__(self,config,debug=False):
         self.config = config
 
         # Initialize each module
