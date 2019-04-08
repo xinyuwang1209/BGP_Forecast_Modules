@@ -55,11 +55,11 @@
     Instance.run_AS_Relationship_Collector()
 ```
 
-### Run PyBGPExtrapolator
+### Run PyBGP_Extrapolator
 * Not completed.
 ``` from BGP_Forecast_Modules import *
     Instance = BGP_Forecast_Modules()
-    Instance.run_PyBGPExtrapolator()
+    Instance.run_PyBGP_Extrapolator()
 ```
 
 ### Run What_If_Analysis_Evaluator
@@ -77,7 +77,7 @@
     Instance.run_MRT_Collector()
     Instance.run_Hijack_Collector()
     Instance.run_AS_Relationship_Collector()
-    Instance.run_PyBGPExtrapolator()
+    Instance.run_PyBGP_Extrapolator()
     Instance.What_If_Analysis_Evaluator()
 ```
 
@@ -209,6 +209,7 @@
         n_false_negative integer
     );
     ```
+
 ## Q&A
 ### PostgreSQL Database Related questions
 #### Why is prefix defined in cidr instead inet?
