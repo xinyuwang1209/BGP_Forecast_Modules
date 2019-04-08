@@ -47,6 +47,10 @@ class BGP_Forecast_Modules():
     def run_PyBGP_Extrapolator(self):
         pass
 
-    def run_What_If_Analysis_Evaluator(self):
+    def run_What_If_Analysis_Evaluator(self,db=True):
         self.What_If_Analysis_Evaluator.What_If_Analysis.init_what_if_analysis_db()
-        self.What_If_Analysis_Evaluator.analyze_all_asn_db()
+        if db:
+            test = self.What_If_Analysis_Evaluator.analyze_all_asn_db()
+        else:
+            test = self.What_If_Analysis_Evaluator.analyze_all_asn_memory()
+        return test
