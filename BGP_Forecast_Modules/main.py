@@ -4,8 +4,8 @@ import configparser
 # from argparser import ArgumentParser
 
 from .ROAs_Collector                import ROAs_Collector
-from .What_If_Analysis_Evaluator    import run_What_If_Analysis_Evaluator
-from .PyBGP_Extrapolator             import
+from .What_If_Analysis_Evaluator    import What_If_Analysis_Evaluator
+from .PyBGP_Extrapolator            import PyBGP_Extrapolator
 from .Utilities import *
 from .Database import *
 __author__ = "Xinyu Wang"
@@ -18,7 +18,8 @@ class BGP_Forecast_Modules():
             self.reset_config_default()
         else:
             self.config = config
-        self.ROAs_Collector = ROAs_Collector(self.config)
+        self.ROAs_Collector             = ROAs_Collector(self.config)
+        self.What_If_Analysis_Evaluator = What_If_Analysis_Evaluator(self.config)
         return
 
     def reset_config_default(self):
@@ -47,10 +48,5 @@ class BGP_Forecast_Modules():
         pass
 
     def run_What_If_Analysis_Evaluator(self):
-        Instance = What_If_Analysis_Evaluator(self.config)
-        Instance.analyze_all_asn_db()
-
-
-# if __name__ == "__main__":
-#     Instance = main()
-#     Instance.run_What_If_Analysis_Evaluator()
+        self.What_If_Analysis_Evaluator.What_If_Analysis.init_what_if_analysis_db()
+        self.What_If_Analysis_Evaluator.analyze_all_asn_db()
