@@ -21,8 +21,8 @@ from urllib.parse import quote
 # path_db = '/'.join(path_db)
 # # print(path_db)
 # sys.path.insert(0, path_db)
-from Database import Database as db
-from Utilities import *
+from .Database import *
+from .Utilities import *
 
 class Conflict_Identifier:
     def __init__(self,config):
@@ -147,8 +147,7 @@ class Conflict_Identifier:
         return
 
     def init_unique_prefix_origin_table(self):
-        
-
+        pass
     def init_prefix_origin_table(self,asn,table,table_new):
         # Then add table
         sql = '''DROP TABLE IF EXISTS ''' + table_new + ''';
@@ -203,7 +202,7 @@ class Conflict_Identifier:
         return po_size
 
     def alter_prefix_origin_columns(self,table,asn=0):
-        date_format = self.config['IP']['date_format']
+        date_format = self.config['DEFAULT']['date_format']
         if asn == 0:
             # Add new columns on poa_distinct
             # extract(epoch from now() at time zone 'utc')::integer
@@ -213,7 +212,7 @@ class Conflict_Identifier:
                 ADD COLUMN IF NOT EXISTS invalid_length boolean default false,
                 ADD COLUMN IF NOT EXISTS invalid_asn boolean default false,
                 ADD COLUMN IF NOT EXISTS hijack boolean default false,
-                ADD COLUMN IF NOT EXISTS first_seen ''' + date_format + ''' default current_date,
+                ADD COLUMN IF NOT EXISTS first_seen ''' + timestamp + ''' default now(),
                 DROP COLUMN IF EXISTS ann_id,
                 DROP COLUMN IF EXISTS priority;'''
         else:
@@ -223,7 +222,7 @@ class Conflict_Identifier:
                 ADD COLUMN IF NOT EXISTS invalid_length boolean default false,
                 ADD COLUMN IF NOT EXISTS invalid_asn boolean default false,
                 ADD COLUMN IF NOT EXISTS hijack boolean default false,
-                ADD COLUMN IF NOT EXISTS first_seen ''' + date_format + ''' default current_date,
+                ADD COLUMN IF NOT EXISTS first_seen ''' + timestamp + ''' default now(),
                 DROP COLUMN IF EXISTS ann_id,
                 DROP COLUMN IF EXISTS priority;'''
         self.sql_operation(sql)
