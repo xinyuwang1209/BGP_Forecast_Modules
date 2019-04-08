@@ -12,7 +12,6 @@ import os
 import sys
 import BGP_Forecast_Modules
 
-
 try:
 	setup(
 		name=BGP_Forecast_Modules.__name__,
