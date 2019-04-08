@@ -34,17 +34,17 @@ try:
 		package_data = {
 			'BGP_Forecast_Modules': ['config.ini']
 		},
-		install_requires=[
-			'ipaddress',
-			'numpy',
-			'pandas',
-			'pathos',
-            'pause',
-			'psycopg2',
-            'python-daemon',
-			'requests',
-			'sqlalchemy'
-		],
+		# install_requires=[
+		# 	'ipaddress',
+		# 	'numpy',
+		# 	'pandas',
+		# 	'pathos',
+        #     'pause',
+		# 	'psycopg2',
+        #     'python-daemon',
+		# 	'requests',
+		# 	'sqlalchemy'
+		# ],
 		)
 finally:
 	pass
