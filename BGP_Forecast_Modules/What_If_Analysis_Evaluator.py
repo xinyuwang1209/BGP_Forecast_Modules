@@ -6,6 +6,7 @@ import time
 import pathos
 import pandas as pd
 import multiprocessing
+from multiprocessing import Manager
 import numpy as np
 import ipaddress as ip
 import psycopg2
@@ -103,6 +104,25 @@ class What_If_Analysis_Evaluator():
             print(counter, msg)
         return counter + 1
 
+    def analyze_all_asn_memory(self):
+        # mgr = Manager()
+        # ns = mgr.Namespace()
+        # ns.hijack = self.Prefix_Origin.get_hijack()[['prefix','origin']]
+        # ns.unique_prefix_origin_history = self.Prefix_Origin.get_unique_prefix_origin_history()
+        # ns.asn = asn
+        hijack = self.Prefix_Origin.get_hijack()[['prefix','origin']]
+        unique_prefix_origin_history = self.Prefix_Origin.get_unique_prefix_origin_history()
+        asns = self.Conflict_Identifier.get_asn_list()
+        if type(asns[0]) is not int:
+            asns = [a['asn'] for a in asns]
+        args = []
+        for asn in asns:
+            args.append([asn,hijack,unique_prefix_origin_history])
+        # p = Process(target=worker, args=(ns, work_unit))
+        pool = pathos.multiprocessing.ProcessingPool(ncpu).map
+        pool(self.analyze_one_asn_memory,args)
+        return ns.unique_prefix_origin_history
+
     def analyze_all_asn_db(self):
         asns = self.Conflict_Identifier.get_asn_list()
         start_time_entire = time.time()
@@ -122,6 +142,9 @@ class What_If_Analysis_Evaluator():
         print("Entire:", "{0:.2f}".format(time.time()-start_time_entire))
         return
     #
+
+    def analyze_one_asn_db(self,args):
+        asn,hijack,unique_prefix_origin_history=self.args
     def analyze_one_asn_db(self,asn,drop_table=True):
         start_time_total = time.time()
         procedure = 0
