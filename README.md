@@ -29,15 +29,15 @@
 ```
 
 ### Get config file, update parameters, set to BGP_Forecast_Modules
-``` from BGP_Forecast_Modules import *
-    Instance = BGP_Forecast_Modules()
+``` $ from BGP_Forecast_Modules import *
+    $ Instance = BGP_Forecast_Modules()
     # Get config
-    config = Instance.get_config()
+    $ config = Instance.get_config()
     # Make some modification on config file here
     # Set config
-    Instance.set_config()
+    $ Instance.set_config()
     # Reset config to default
-    Instance.reset_config_default()
+    $ Instance.reset_config_default()
 ```
 
 ### Run ROAs_Collector
