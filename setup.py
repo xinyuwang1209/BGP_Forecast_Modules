@@ -35,6 +35,7 @@ try:
 			'BGP_Forecast_Modules': ['config.ini']
 		},
 		install_requires=[
+            'daemon',
 			'ipaddress',
 			'numpy',
 			'pandas',
