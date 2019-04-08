@@ -19,20 +19,8 @@ import pandas as pd
 import pathos.multiprocessing as mp
 import logging
 
-# Database access module import
-dir_db = 'Utilities/'
-path = os.path.abspath(__file__)
-path_db = path.split('/')[:-2]
-# print('/'.join(path_db))
-# Insert path of root directory
-sys.path.insert(0,'/'.join(path_db))
-path_db.append(dir_db)
-path_db = '/'.join(path_db)
-# print(path_db)
-# Insert path of Database directory
-sys.path.insert(0, path_db)
-from Database import Database as db
-from Utilities import *
+from .Database import *
+from .Utilities import *
 
 
 # We denote all the BGP announcements as A
