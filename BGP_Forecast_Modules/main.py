@@ -38,12 +38,12 @@ class BGP_Forecast_Modules():
         self.ROAs_Collector.store_ROAs(self.ROAs_Collector.download_ROAs())
         self.ROAs_Collector.create_index()
 
-    def run_BGP_Extrapolator(self):
+    def run_PyBGPExtrapolator(self):
         pass
 
-    # def run_What_If_Analysis_Evaluator(self):
-    #     Instance = What_If_Analysis_Evaluator(self.config)
-    #     Instance.analyze_all_asn_db()
+    def run_What_If_Analysis_Evaluator(self):
+        Instance = What_If_Analysis_Evaluator(self.config)
+        Instance.analyze_all_asn_db()
 
 # if __name__ == "__main__":
 #     Instance = main()
