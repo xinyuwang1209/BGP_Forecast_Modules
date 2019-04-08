@@ -3,7 +3,9 @@ import os
 import configparser
 # from argparser import ArgumentParser
 
-from .ROAs_Collector import ROAs_Collector
+from .ROAs_Collector                import ROAs_Collector
+from .What_If_Analysis_Evaluator    import run_What_If_Analysis_Evaluator
+from .PyBGP_Extrapolator             import
 from .Utilities import *
 from .Database import *
 __author__ = "Xinyu Wang"
@@ -38,12 +40,16 @@ class BGP_Forecast_Modules():
         self.ROAs_Collector.store_ROAs(self.ROAs_Collector.download_ROAs())
         self.ROAs_Collector.create_index()
 
-    def run_PyBGPExtrapolator(self):
+    def init_unique_prefix_origin_history_daemon(self):
+        pass
+
+    def run_PyBGP_Extrapolator(self):
         pass
 
     def run_What_If_Analysis_Evaluator(self):
         Instance = What_If_Analysis_Evaluator(self.config)
         Instance.analyze_all_asn_db()
+
 
 # if __name__ == "__main__":
 #     Instance = main()
