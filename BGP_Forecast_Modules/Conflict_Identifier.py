@@ -146,6 +146,9 @@ class Conflict_Identifier:
 
         return
 
+    def init_unique_prefix_origin_table(self):
+        
+
     def init_prefix_origin_table(self,asn,table,table_new):
         # Then add table
         sql = '''DROP TABLE IF EXISTS ''' + table_new + ''';

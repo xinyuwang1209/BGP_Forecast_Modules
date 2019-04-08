@@ -10,39 +10,32 @@ import ipaddress as ip
 import psycopg2
 import subprocess
 import configparser
-from psycopg2.extras import RealDictCursor
-from .ROAs_Collector.ROAs_Collector             import ROAs_Collector 		as M1
-from .Conflict_Identifier.Conflict_Identifier   import Conflict_Identifier 	as M2
-from .Prefix_Origin.Prefix_Origin 				import Prefix_Origin 		as M3
-from .Conflict_Classifier.Conflict_Classifier 	import Conflict_Classifier 	as M4
-from .What_If_Analysis.What_If_Analysis 	    import What_If_Analysis 	as M5
-from .Utilities.Database                        import Database as db
-from .Utilities.Utilities                       import Utilities as *
+from psycopg2.extras        import RealDictCursor
+from .ROAs_Collector        import ROAs_Collector
+from .Conflict_Identifier   import Conflict_Identifier
+from .Prefix_Origin 		import Prefix_Origin
+from .Conflict_Classifier 	import Conflict_Classifier
+from .What_If_Analysis 	    import What_If_Analysis
+from .Database              import Database as db
+from .Utilities             import Utilities as *
 
 
-
-class What_If_Analysis_Evaluator():
+class What_If_Analysis_Evaluator(config):
     def __init__(self,config_file='config.ini',debug=False):
-        self.config = configparser.ConfigParser()
-        self.config.read(config_file)
+        self.config = config
 
         # Initialize each module
-        self.ROAs_Collector         = M1(self.config)
-        self.Conflict_Identifier    = M2(self.config)
-        self.Prefix_Origin          = M3(self.config)
-        self.Conflict_Classifier    = M4(self.config)
-        self.What_If_Analysis       = M5(self.config)
+        self.ROAs_Collector         = ROAs_Collector(self.config)
+        self.Conflict_Identifier    = Conflict_Identifier(self.config)
+        self.Prefix_Origin          = Prefix_Origin(self.config)
+        self.Conflict_Classifier    = Conflict_Classifier(self.config)
+        self.What_If_Analysis       = What_If_Analysis(self.config)
         self.debug = debug
 
 
     def run_rpki_validator(self):
         # subprocess.Popen("bash /opt/rpki-validator/blabla")
         pass
-
-    def get_config(self):
-        return self.config
-
-
 
     def run_Conflict_Identifier(self,asn,table_source,table):
         self.Conflict_Identifier.init_prefix_origin_table(asn=asn,table=table_source,table_new=table)
