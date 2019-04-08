@@ -35,12 +35,13 @@ try:
 			'BGP_Forecast_Modules': ['config.ini']
 		},
 		install_requires=[
-            'daemon',
 			'ipaddress',
 			'numpy',
 			'pandas',
 			'pathos',
+            'pause',
 			'psycopg2',
+            'python-daemon',
 			'requests',
 			'sqlalchemy'
 		],
