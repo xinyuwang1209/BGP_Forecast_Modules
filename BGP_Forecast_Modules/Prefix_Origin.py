@@ -11,45 +11,18 @@ import multiprocessing as mp
 from urllib.parse import quote
 import gzip
 
-# Database access module import
-dir_db = 'Utilities/'
-path = os.path.abspath(__file__)
-path_db = path.split('/')[:-2]
-# print('/'.join(path_db))
-# Insert path of root directory
-sys.path.insert(0,'/'.join(path_db))
-path_db.append(dir_db)
-path_db = '/'.join(path_db)
-# print(path_db)
-# Insert path of Database directory
-sys.path.insert(0, path_db)
-from Database import Database as db
-from Utilities import *
+from .Database import *
+from .Utilities import *
 
 
 class Prefix_Origin:
 
     def __init__(self, config):
-        # self.db = db
-        # self.cursor = db.get_cursor()
-        # self.prefix_origin_pairs = []
-        # self.hijacks = []
-        # self.announcements = None
-        # self.file = None
-        # self.html = None
-        # request = None
-        # self.header = {'User-Agent':'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:57.0) Gecko/20100101 Firefox/57.0',
-        #     "Accept":"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
-        #     }
         self.f = None
         self.config = config
         self.tablename = self.config['DATABASE']
 
-        # Database Initialization
-        self.db_confid = self.config['DATABASE']['path_confidential']
-        self.conn = db(self.db_confid)
-        self.conn.connect()
-        self.cursor = self.conn.get_cursor()
+
         return
 
     def sql_operation(self,sql,connection=None):
@@ -88,17 +61,19 @@ class Prefix_Origin:
     def update_prefix_origin_validity(self,table):
         sql = '''UPDATE ''' + table + '''
             SET    invalid_length = true
-            FROM   ''' + self.config['TABLES']['validity'] + '''
-            WHERE  ''' + table + '''.prefix = ''' + self.config['TABLES']['validity'] + '''.prefix
-            AND    ''' + table + '''.origin = ''' + self.config['TABLES']['validity'] + '''.asn
-            AND    ''' + self.config['TABLES']['validity'] + '''.validity=-1;'''
+            FROM   ''' + self.config['TABLES']['unique_prefix_origin_validity'] + '''
+            WHERE  ''' + table + '''.prefix = ''' + self.config['TABLES']['unique_prefix_origin_validity'] + '''.prefix
+            AND    ''' + table + '''.origin = ''' + self.config['TABLES']['unique_prefix_origin_validity'] + '''.origin
+            AND    ''' + self.config['TABLES']['unique_prefix_origin_validity'] + '''.validity=-1;'''
+        # print_time('[update_prefix_origin_validity]\n',sql,'\n')
+
         self.sql_operation(sql)
         sql = '''UPDATE ''' + table + '''
             SET    invalid_asn = true
-            FROM   ''' + self.config['TABLES']['validity'] + '''
-            WHERE  ''' + table + '''.prefix = ''' + self.config['TABLES']['validity'] + '''.prefix
-            AND    ''' + table + '''.origin = ''' + self.config['TABLES']['validity'] + '''.asn
-            AND    ''' + self.config['TABLES']['validity'] + '''.validity=-2;'''
+            FROM   ''' + self.config['TABLES']['unique_prefix_origin_validity'] + '''
+            WHERE  ''' + table + '''.prefix = ''' + self.config['TABLES']['unique_prefix_origin_validity'] + '''.prefix
+            AND    ''' + table + '''.origin = ''' + self.config['TABLES']['unique_prefix_origin_validity'] + '''.origin
+            AND    ''' + self.config['TABLES']['unique_prefix_origin_validity'] + '''.validity=-2;'''
         self.sql_operation(sql)
         return
 
@@ -128,8 +103,8 @@ class Prefix_Origin:
         sql = '''UPDATE ''' + table + '''
             SET    hijack = true
             FROM   ''' + self.config['TABLES']['hijack'] + '''
-            WHERE  ''' + table + '''.prefix <<= ''' + self.config['TABLES']['hijack'] + '''.more_specific_prefix
-            AND    ''' + table + '''.origin = ''' + self.config['TABLES']['hijack'] + '''.detected_origin_number;'''
+            WHERE  ''' + table + '''.prefix <<= ''' + self.config['TABLES']['hijack'] + '''.prefix
+            AND    ''' + table + '''.origin = ''' + self.config['TABLES']['hijack'] + '''.origin;'''
         self.sql_operation(sql)
         return
 
