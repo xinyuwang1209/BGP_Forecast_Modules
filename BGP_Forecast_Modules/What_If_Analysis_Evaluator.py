@@ -5,6 +5,7 @@ import sys
 import time
 import pathos
 import pandas as pd
+import multiprocessing
 import numpy as np
 import ipaddress as ip
 import psycopg2
@@ -47,7 +48,7 @@ class What_If_Analysis_Evaluator():
         return
 
     def run_Prefix_Origin(self,table):
-        if int(self.config['IP']['validity']) == 1:
+        if int(self.config['DEFAULT']['validity']) == 1:
             self.Prefix_Origin.update_prefix_origin_validity(table=table)
         else:
             print('-------------------------not suppose-------------------------')
@@ -104,21 +105,25 @@ class What_If_Analysis_Evaluator():
 
     def analyze_all_asn_db(self):
         asns = self.Conflict_Identifier.get_asn_list()
-
+        start_time_entire = time.time()
         if type(asns[0]) is not int:
             asns = [a['asn'] for a in asns]
-        # pool = pathos.multiprocessing.ProcessingPool().amap
-        # result = pool(self.analyze_one_asn_db,asns)
-        accu = 0
-        for i in range(len(asns)):
-            start_time = time.time()
-            self.analyze_one_asn_db(asns[i])
-            end_time = time.time()
-            accu = end_time-start_time + accu
-            print(str(i+1).zfill(5),'/',len(asns),int(end_time-start_time),'seconds, average is',accu/(i+1))
-        return
+        ncpu = multiprocessing.cpu_count()
+        pool = pathos.multiprocessing.ProcessingPool(ncpu).map
+        pool(self.analyze_one_asn_db,asns)
 
+        # accu = 0
+        # for i in range(len(asns)):
+        #     start_time = time.time()
+        #     self.analyze_one_asn_db(asns[i])
+        #     end_time = time.time()
+        #     accu = end_time-start_time + accu
+        #     print(str(i+1).zfill(5),'/',len(asns),int(end_time-start_time),'seconds, average is',accu/(i+1))
+        print("Entire:", "{0:.2f}".format(time.time()-start_time_entire))
+        return
+    #
     def analyze_one_asn_db(self,asn,drop_table=True):
+        start_time_total = time.time()
         procedure = 0
         procedure = self.output_message("Get table names.",procedure)
         start_time = time.time()
@@ -155,39 +160,40 @@ class What_If_Analysis_Evaluator():
 
         if drop_table:
             self.What_If_Analysis.drop_prefix_origin(table=table_prefix_origin_asn)
+        print(asn,"{0:.2f}".format(time.time()-start_time_total),'seconds')
         return
 
     def analyze_one_asn_python(self,asn,roas):
-        print("1: get roas")
-        print("3: get prefix_origin")
-        prefix_origin = self.Conflict_Identifier.get_prefix_origin_query(asn)
-        print("4: convert prefix")
-        prefix_origin['prefix'] = prefix_origin['prefix'].apply(ip.ip_network)
-        prefix_origin['wroa'] = False
-        prefix_origin['invalid_asn'] = False
-        prefix_origin['invalid_length'] = False
-        print(prefix_origin)
+        # print("1: get roas")
+        # print("3: get prefix_origin")
+        # prefix_origin = self.Conflict_Identifier.get_prefix_origin_query(asn)
+        # print("4: convert prefix")
+        # prefix_origin['prefix'] = prefix_origin['prefix'].apply(ip.ip_network)
+        # prefix_origin['wroa'] = False
+        # prefix_origin['invalid_asn'] = False
+        # prefix_origin['invalid_length'] = False
+        # print(prefix_origin)
+        #
+        #
+        # # Remove after test
+        # # prefix_origin = prefix_origin.iloc[:50,:]
+        # print("start timing", prefix_origin.shape[0])
+        # start_time = time.time()
+        # # sum(roas4['prefix'].apply(df['prefix'][5].subnet_of))
+        # # Update roa information and determin=-
+        # # prefix_origin[['wroa','invalid_length','invalid_asn'] = prefix_origin[['wroa','invalid_length','invalid_asn'].apply(self.Conflict_Identifier.validation)s
+        # self.Conflict_Identifier.init_ROAs()
+        # cum_lst = []
+        # counter = 0
+        # for index, row in prefix_origin.iterrows():
+        #     print(counter)
+        #     counter += 1
+        #     cum_lst.append(self.Conflict_Identifier.local_validation(row))
+        # cum_lst = pd.DataFrame(cum_lst)
+        # prefix_origin['wroa']           = cum_lst['wroa']
+        # prefix_origin['invalid_asn']    = cum_lst['invalid_asn']
+        # prefix_origin['invalid_length'] = cum_lst['invalid_length']
+        # print(prefix_origin)
 
-
-        # Remove after test
-        # prefix_origin = prefix_origin.iloc[:50,:]
-        print("start timing", prefix_origin.shape[0])
-        start_time = time.time()
-        # sum(roas4['prefix'].apply(df['prefix'][5].subnet_of))
-        # Update roa information and determin=-
-        # prefix_origin[['wroa','invalid_length','invalid_asn'] = prefix_origin[['wroa','invalid_length','invalid_asn'].apply(self.Conflict_Identifier.validation)s
-        self.Conflict_Identifier.init_ROAs()
-        cum_lst = []
-        counter = 0
-        for index, row in prefix_origin.iterrows():
-            print(counter)
-            counter += 1
-            cum_lst.append(self.Conflict_Identifier.local_validation(row))
-        cum_lst = pd.DataFrame(cum_lst)
-        prefix_origin['wroa']           = cum_lst['wroa']
-        prefix_origin['invalid_asn']    = cum_lst['invalid_asn']
-        prefix_origin['invalid_length'] = cum_lst['invalid_length']
-        print(prefix_origin)
-        # del cum_lst
         print(time.time()-start_time)
         return prefix_origin, cum_lst
