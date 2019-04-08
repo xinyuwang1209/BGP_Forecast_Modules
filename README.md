@@ -2,16 +2,32 @@
 
 ## Installation
 * Use pip
-``` pip install BGP_Forecast_Modules
+```
+    pip install BGP_Forecast_Modules
 ```
 * or clone from GitHub
-``` git clone https://github.com/xinyuwang1209/BGP_Forecast_Modules
-    cd https://github.com/xinyuwang1209/BGP_Forecast_Modules
-    pip install -r requirements.txt --user
-    python setup.py install --user
+```
+    $ git clone https://github.com/xinyuwang1209/BGP_Forecast_Modules
+    $ cd BGP_Forecast_Modules
+    $ pip install -r requirements.txt --user
+    $ python setup.py install --user
 ```
 
 ## Usage
+* Before running BGP_Forecast_Modules, PostgreSQL with version >= 11.2 needs to be installed and running. BGP_Forecast_Modules assumed that a database named 'bgp' is created and a config file '/etc/bgp/bgp.conf' is created to provide credentials to access the database.
+### Database installation
+* Firstly, change user to Postgres
+```
+    $ sudo su postgres
+```
+* (Optional) Creating the database on a SSD significantly increases read-write speed. If you have a SSD installed and you want to change database directory from default location i.e. "`/var/lib/postgres`" to a new location where the SSD is mounted, take a look at the Arch Wiki
+[Change_DB_Location](https://wiki.archlinux.org/index.php/PostgreSQL#Change_default_data_directory)
+
+* (Optional) init database if postgresql is installed
+```
+    $ initdb -D /var/lib/postgres/data
+```
+
 ### Get config file, update parameters, set to BGP_Forecast_Modules
 ``` from BGP_Forecast_Modules import *
     Instance = BGP_Forecast_Modules()
@@ -90,37 +106,6 @@
         roa_updated_at TIMESTAMP DEFAULT now() NOT NULL
 )
 
-#### prefix_origin Schema
-* This data comes from RIPE rpki-validator-3 retrieved by the Conflicted_Identifier module (Conflicted_Identifier.py)
-* po_id: id of prefix_origin table (primary key)
-* prefix: prefix (inet)
-* orign: ASN (bigint)
-* alter_as: whether there exists a best alternative announcement (boolean)
-* validity: type of validity (boolean)
-    * true ('INVALID_ASN'), false ('INVALID_LENGTH')
-* hijack: whether there exists a suspected attack event (boolean)
-* policyid: id of applied policy
-* decision_1: decision made by the policy 1 (smallint)
-* decision_2: decision made by the policy 2 (smallint)
-* ...
-  * 0 (enforce), 1 (deprefer), 2 (pass), 3 (whitelist)
-* time: time_record of the announcement
-* Create Table SQL commands:
-    ```sql
-    CREATE TABLE prefix_origin (
-        po_id serial PRIMARY KEY,
-        prefix inet,
-        origin bigint,
-        validity smallint,
-        hijack boolean,
-        policyid smallint,
-        decision smallint,
-        next_hop bigint,
-        as_path bigint ARRAY,
-        time integer
-    );
-    ```
-
 #### unique_prefix_origin Schema
 * upo_id: id of unique_prefix_origin table (primary key)
 * prefix: prefix (cidr)
@@ -163,7 +148,7 @@
 * time: time_record of the announcement
 * Create Table SQL commands:
     ```sql
-    CREATE TABLE unique_prefix_origin (
+    CREATE TABLE unique_prefix_origin_wroa (
         upo_id serial PRIMARY KEY,
         prefix cidr,
         origin bigint,
@@ -177,13 +162,33 @@
     ```
 
 
+#### unique_prefix_origin_history Schema
+* upoh_id: id of unique_prefix_origin_history table (primary key)
+* prefix: prefix (cidr)
+* origin: AS number (bigint)
+* first_seen: epoch (bigint)
+* time: time_record of the announcement
+* Create Table SQL commands:
+    ```sql
+    CREATE TABLE unique_prefix_origin_wroa (
+        upo_id serial PRIMARY KEY,
+        prefix cidr,
+        origin bigint,
+        invalid_length boolean default true,
+        invalid_asn boolean default true,
+        hijack boolean,
+        decision smallint,
+        next_hop bigint,
+        time integer
+    );
+    ```
 
 #### what_if_analysis Schema
 * This data is retrieved by the Conflict_Identifier (Conflicted_Identifier.py and Whatif_Analysis.py)
 * wia_id : id of what_if analysis table (primary key)
 * hijack: the total number of announcements with suspected attack records (labeled as "real conflicted announcements")
 * n_true_positive: the total number of real conflicted announcements enforced or preferred
-    * n_true-positive rate can be calculated by ```math$`\frac{wi\_true_positive}{(wi\_invalid -  wi\_attack/)} `$```
+    * n_true-positive rate can be calculated by ```math $`\frac{wi\_true_positive}{(wi\_invalid -  wi\_attack/)} `$```
 * n_false_positive: total number of non-real conflicted announcements enforeced or deprefered
     * n_false-positive rate can be calculated by $`\frac{wi\_false\_positive}{(wi\_invalid -  wi\_attack/)}`$
 * n_true_negative: total number of real conflicted announcements passed or whitelisted
