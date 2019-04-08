@@ -12,7 +12,6 @@ __author__ = "Xinyu Wang"
 
 class BGP_Forecast_Modules():
     def __init__(self,config=None):
-
         if config is None:
             self.reset_config_default()
         else:
