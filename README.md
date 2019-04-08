@@ -1,6 +1,10 @@
 # BGP_Forecast_Modules
 
-## Usage
+## Installation
+* Use pip
+``` pip install BGP_Forecast_Modules
+```
+* or clone from GitHub
 ``` git clone https://github.com/xinyuwang1209/BGP_Forecast_Modules
     cd https://github.com/xinyuwang1209/BGP_Forecast_Modules
     pip install -r requirements.txt --user
@@ -10,7 +14,13 @@
 ## Get config file, update parameters, set to BGP_Forecast_Modules
 ``` from BGP_Forecast_Modules import *
     Instance = BGP_Forecast_Modules()
-    Instance.run_ROAs_Collector()
+    # Get config
+    config = Instance.get_config()
+    # Make some modification on config file here
+    # Set config
+    Instance.set_config()
+    # Reset config to default
+    Instance.reset_config_default()
 ```
 
 ## Run ROAs_Collector

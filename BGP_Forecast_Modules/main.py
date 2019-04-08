@@ -12,29 +12,25 @@ __author__ = "Xinyu Wang"
 
 class BGP_Forecast_Modules():
     def __init__(self,config=None):
-        self.init_config_default()
 
         if config is None:
-            self.config = self.config_default
+            self.reset_config_default()
         else:
             self.config = config
-
         self.ROAs_Collector = ROAs_Collector(self.config)
-
         return
 
-    def init_config_default(self):
-        self.config_default = configparser.ConfigParser()
+    def reset_config_default(self):
+        self.config = configparser.ConfigParser()
         config_file = os.path.abspath(os.path.dirname(__file__)) + '/config.ini'
-        self.config_default.read(config_file)
+        self.config.read(config_file)
         return
+
+    def get_config(self):
+        return self.config
 
     def set_config(self,config):
         self.config = config
-        return
-
-    def reset_config(self):
-        self.config = self.config_default
         return
 
         # Download and Store ROAs
