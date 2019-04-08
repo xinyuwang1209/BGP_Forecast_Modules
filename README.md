@@ -9,7 +9,6 @@
 ```
     $ git clone https://github.com/xinyuwang1209/BGP_Forecast_Modules
     $ cd BGP_Forecast_Modules
-    $ pip install -r requirements.txt --user
     $ python setup.py install --user
 ```
 
