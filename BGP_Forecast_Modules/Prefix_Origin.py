@@ -107,6 +107,23 @@ class Prefix_Origin:
             AND    ''' + table + '''.origin = ''' + self.config['TABLES']['hijack'] + '''.origin;'''
         self.sql_operation(sql)
         return
+    def get_hijack(self):
+        connection = init_db(self.config['DATABASE']['path_confidential'])
+        hijack = self.config['TABLES']['hijack']
+
+        sql = '''SELECT * FROM ''' + hijack + ''' WHERE origin is not null;'''
+        df = pd.read_sql_query(sql,con=connection)
+        connection.close()
+        return df
+
+    def get_unique_prefix_origin_history(self):
+        connection = init_db(self.config['DATABASE']['path_confidential'])
+        unique_prefix_origin_history = self.config['TABLES']['unique_prefix_origin_history']
+
+        sql = '''SELECT * FROM ''' + unique_prefix_origin_history + ''';'''
+        df = pd.read_sql_query(sql,con=connection)
+        connection.close()
+        return df
 
     def update_time(self,table,prefixorigin=True):
         # Verify if prefix-origin pair has a corresponding hijack record
