@@ -295,12 +295,12 @@ class Conflict_Classifier():
     def run_policy_2(self,df,params=None):
         # Init column names
         if params == None:
-            params = self.config['POLICY_1']
+            params = self.config['POLICY_2']
         table_names = self.config['TABLES']
         decision_bbb = table_names['decision_2']
         invalid_length = table_names['invalid_length']
         invalid_asn = table_names['invalid_asn']
-        ctime = table_names['time']
+        ctime = table_names['first_seen']
         time_current = int(time.time())
 
         # Create decision_2 column if not exists
