@@ -48,9 +48,12 @@ class BGP_Forecast_Modules():
         pass
 
     def run_What_If_Analysis_Evaluator(self,db=True):
+        print_time('[run_What_If_Analysis_Evaluator] Starts.')
+        start_time = time.time()
         self.What_If_Analysis_Evaluator.What_If_Analysis.init_what_if_analysis_db()
         if db:
-            test = self.What_If_Analysis_Evaluator.analyze_all_asn_db()
+            self.What_If_Analysis_Evaluator.analyze_all_asn_db()
         else:
-            test = self.What_If_Analysis_Evaluator.analyze_all_asn_memory()
-        return test
+            self.What_If_Analysis_Evaluator.analyze_all_asn_memory()
+        print_time('[run_What_If_Analysis_Evaluator] Completed, elapsed time:',str(datetime.timedelta(seconds=time.time()-start_time))[:-6])
+        return
