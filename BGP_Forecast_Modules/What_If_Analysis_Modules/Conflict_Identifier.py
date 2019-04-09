@@ -12,17 +12,10 @@ import ipaddress as ip
 import multiprocessing as mp
 from urllib.parse import quote
 
-# Database access module import
-# dir_db = 'Database/'
-# path = os.path.abspath(__file__)
-# # print(path)
-# path_db = path.split('/')[:-2]
-# path_db.append(dir_db)
-# path_db = '/'.join(path_db)
-# # print(path_db)
-# sys.path.insert(0, path_db)
-from .Database import *
-from .Utilities import *
+# Import Utilities
+from ..Utilities.Database import *
+from ..Utilities.Utilities import *
+
 
 class Conflict_Identifier:
     def __init__(self,config):

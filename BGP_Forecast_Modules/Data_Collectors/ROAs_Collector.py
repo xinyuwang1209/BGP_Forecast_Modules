@@ -5,9 +5,10 @@ import sys
 import json
 import time
 import requests
-from .Utilities import *
-from .Database import *
 
+# Import Utilities
+from ..Utilities.Database import *
+from ..Utilities.Utilities import *
 
 class ROAs_Collector:
     def __init__(self, config):

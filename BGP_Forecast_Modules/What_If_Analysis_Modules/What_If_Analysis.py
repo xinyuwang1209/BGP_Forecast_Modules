@@ -18,11 +18,10 @@ import pandas as pd
 import pathos.multiprocessing as mp
 import logging
 
-from .Database import *
-from .Utilities import *
+# Import Utilities
+from ..Utilities.Database import *
+from ..Utilities.Utilities import *
 
-# COMPLETED
-# # TODO:
 
 class What_If_Analysis():
     def __init__(self,config,debug=False):
