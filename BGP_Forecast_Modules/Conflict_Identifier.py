@@ -112,12 +112,12 @@ class Conflict_Identifier:
     def get_prefix_origin_query(self,asn):
         query_asn = str(asn)
         connection = init_db(self.config['DATABASE']['path_confidential'])
-        sql = "SELECT prefix_origin FROM " + self.config['TABLES']['extrapolation_results'] + " WHERE asn=" + query_asn + ";"
+        sql = "SELECT prefix,origin,received_from_asn FROM " + self.config['TABLES']['extrapolation_results'] + " WHERE asn=" + query_asn + ";"
         df = pd.read_sql_query(sql,con=connection)
-        df['prefix'] = df['prefix_origin'].apply(lambda x: x.split("-")[0])
-        df['origin'] = df['prefix_origin'].apply(lambda x: int(x.split("-")[1]))
+        # df['prefix'] = df['prefix_origin'].apply(lambda x: x.split("-")[0])
+        # df['origin'] = df['prefix_origin'].apply(lambda x: int(x.split("-")[1]))
         connection.close()
-        return df[['prefix','origin']]
+        return df
 
     def get_prefix_origin_dump(self):
         url = "http://www.ris.ripe.net/dumps/riswhoisdump.IPv4.gz"
