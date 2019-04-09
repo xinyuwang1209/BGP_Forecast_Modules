@@ -11,8 +11,9 @@ import multiprocessing as mp
 from urllib.parse import quote
 import gzip
 
-from .Database import *
-from .Utilities import *
+# Import Utilities
+from ..Utilities.Database import *
+from ..Utilities.Utilities import *
 
 
 class Prefix_Origin:

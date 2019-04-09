@@ -6,23 +6,25 @@ import time
 import pathos
 import pandas as pd
 import multiprocessing
-from multiprocessing import Manager
 import numpy as np
 import ipaddress as ip
 import psycopg2
 import subprocess
 import configparser
 from psycopg2.extras        import RealDictCursor
+
+# Import Modules
 from .ROAs_Collector        import ROAs_Collector
 from .Conflict_Identifier   import Conflict_Identifier
 from .Prefix_Origin 		import Prefix_Origin
 from .Conflict_Classifier 	import Conflict_Classifier
 from .What_If_Analysis 	    import What_If_Analysis
-# from .Database              import Database as db
-from .Utilities             import *
 
+# Import Utilities
+from ..Utilities.Database import *
+from ..Utilities.Utilities import *
 
-class What_If_Analysis_Evaluator():
+class What_If_Analysis_Controller():
     def __init__(self,config,debug=False):
         self.config = config
 
