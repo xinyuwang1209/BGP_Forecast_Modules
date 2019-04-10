@@ -15,7 +15,6 @@ import configparser
 from psycopg2.extras        import RealDictCursor
 
 # Import Modules
-from .ROAs_Collector        import ROAs_Collector
 from .Conflict_Identifier   import Conflict_Identifier
 from .Prefix_Origin 		import Prefix_Origin
 from .Conflict_Classifier 	import Conflict_Classifier
@@ -30,7 +29,6 @@ class What_If_Analysis_Controller():
         self.config = config
 
         # Initialize each module
-        self.ROAs_Collector         = ROAs_Collector(self.config)
         self.Conflict_Identifier    = Conflict_Identifier(self.config)
         self.Prefix_Origin          = Prefix_Origin(self.config)
         self.Conflict_Classifier    = Conflict_Classifier(self.config)
@@ -136,9 +134,10 @@ class What_If_Analysis_Controller():
         if type(asns[0]) is not int:
             asns = [a['asn'] for a in asns]
         ncpu = multiprocessing.cpu_count()
-        pool = pathos.multiprocessing.ProcessingPool(ncpu).map
-        pool(self.analyze_one_asn_db,asns)
-
+        pool = pathos.multiprocessing.ProcessingPool(ncpu).amap
+        results = pool(self.analyze_one_asn_db,asns)
+        while not results.ready():
+            time.sleep(5); print(".", end=' ')
         # accu = 0
         # for i in range(len(asns)):
         #     start_time = time.time()
@@ -151,9 +150,10 @@ class What_If_Analysis_Controller():
     #
 
     def analyze_one_asn_memory(self,args):
+        asn,hijack,unique_prefix_origin_history=args
         print_time('[run_What_If_Analysis] Starts on AS:',asn)
         start_time = time.time()
-        asn,hijack,unique_prefix_origin_history=args
+
         prefix_origin = self.Conflict_Identifier.get_prefix_origin_query(asn)
 
         # Init hijack column
