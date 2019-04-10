@@ -5,3 +5,15 @@ Elapsed_time for extrapolator: 3:12:00
 
 Average evaluation time: 1.25s
 asns in extrapolation_results: 40512
+index creation on gist(asn,prefix inet_ops,origin): 2:10:00
+
+
+
+Cumulative
+mrt_parser (for now) 2:10 hour
+
+extrapolator: 3:12
+index: 2:10
+
+validation: 0:10
+what_if_analysis: 2:00
