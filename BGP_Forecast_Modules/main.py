@@ -1,16 +1,13 @@
 #!/usr/bin/env python3
 import os
+import sys
 import configparser
-# from argparser import ArgumentParser
 
-from .ROAs_Collector                import ROAs_Collector
-from .What_If_Analysis_Evaluator    import What_If_Analysis_Evaluator
-from .PyBGP_Extrapolator            import PyBGP_Extrapolator
+__author__ = "Xinyu Wang"
 
 # Import Utilities
-from ..Utilities.Database import *
-from ..Utilities.Utilities import *
-__author__ = "Xinyu Wang"
+from .Utilities.Database import *
+from .Utilities.Utilities import *
 
 # Import Data_Collectors
 from .Data_Collectors.ROAs_Collector import *
@@ -28,6 +25,7 @@ from .What_If_Analysis_Modules.Prefix_Origin import *
 from .What_If_Analysis_Modules.Conflict_Classifier import *
 from .What_If_Analysis_Modules.What_If_Analysis import *
 
+
 class BGP_Forecast_Modules():
     def __init__(self,config=None):
         if config is None:
@@ -35,7 +33,7 @@ class BGP_Forecast_Modules():
         else:
             self.config = config
         self.ROAs_Collector             = ROAs_Collector(self.config)
-        self.What_If_Analysis_Evaluator = What_If_Analysis_Evaluator(self.config)
+        self.What_If_Analysis_Controller = What_If_Analysis_Controller(self.config)
         return
 
     def reset_config_default(self):
@@ -63,15 +61,15 @@ class BGP_Forecast_Modules():
     def run_PyBGP_Extrapolator(self):
         pass
 
-    def run_What_If_Analysis_Evaluator(self,db=True):
-        print_time('[run_What_If_Analysis_Evaluator] Starts.')
+    def run_What_If_Analysis_Controller(self,db=True):
+        print_time('[run_What_If_Analysis_Controller] Starts.')
         start_time = time.time()
 
-        self.What_If_Analysis_Evaluator.What_If_Analysis.init_what_if_analysis_db()
+        self.What_If_Analysis_Controller.What_If_Analysis.init_what_if_analysis_db()
         if db:
-            self.What_If_Analysis_Evaluator.analyze_all_asn_db()
+            self.What_If_Analysis_Controller.analyze_all_asn_db()
         else:
-            self.What_If_Analysis_Evaluator.analyze_all_asn_memory()
+            self.What_If_Analysis_Controller.analyze_all_asn_memory()
 
-        print_time('[run_What_If_Analysis_Evaluator] Completed, elapsed time:',str(datetime.timedelta(seconds=time.time()-start_time))[:-6])
+        print_time('[run_What_If_Analysis_Controller] Completed, elapsed time:',str(datetime.timedelta(seconds=time.time()-start_time))[:-6])
         return
