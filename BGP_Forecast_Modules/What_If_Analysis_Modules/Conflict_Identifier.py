@@ -205,7 +205,7 @@ class Conflict_Identifier:
                 ADD COLUMN IF NOT EXISTS invalid_length boolean default false,
                 ADD COLUMN IF NOT EXISTS invalid_asn boolean default false,
                 ADD COLUMN IF NOT EXISTS hijack boolean default false,
-                ADD COLUMN IF NOT EXISTS first_seen ''' + timestamp + ''' default now(),
+                ADD COLUMN IF NOT EXISTS first_seen timestamp default now(),
                 DROP COLUMN IF EXISTS ann_id,
                 DROP COLUMN IF EXISTS priority;'''
         else:
@@ -215,7 +215,7 @@ class Conflict_Identifier:
                 ADD COLUMN IF NOT EXISTS invalid_length boolean default false,
                 ADD COLUMN IF NOT EXISTS invalid_asn boolean default false,
                 ADD COLUMN IF NOT EXISTS hijack boolean default false,
-                ADD COLUMN IF NOT EXISTS first_seen ''' + timestamp + ''' default now(),
+                ADD COLUMN IF NOT EXISTS first_seen timestamp default now(),
                 DROP COLUMN IF EXISTS ann_id,
                 DROP COLUMN IF EXISTS priority;'''
         self.sql_operation(sql)
