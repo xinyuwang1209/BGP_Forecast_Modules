@@ -1,19 +1,5 @@
 #!/usr/bin/env python3
-
-import os
-import sys
-import time
-import datetime
-import pathos
-import pandas as pd
-import multiprocessing
-import numpy as np
-import ipaddress as ip
-import psycopg2
-import subprocess
-import configparser
-from psycopg2.extras        import RealDictCursor
-
+ # import os import sys import time import datetime import pathos import pandas as pd import multiprocessing import numpy as np import ipaddress as ip import psycopg2 import subprocess import configparser from psycopg2.extras        import RealDictCursorjjjjjjjjjjjjjjjjhmnjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj
 # Import Modules
 from .Conflict_Identifier   import Conflict_Identifier
 from .Prefix_Origin 		import Prefix_Origin
@@ -114,7 +100,6 @@ class What_If_Analysis_Controller():
         hijack = self.Prefix_Origin.get_hijack()[['prefix','origin']]
         unique_prefix_origin_history = self.Prefix_Origin.get_unique_prefix_origin_history()
         unique_prefix_origin_history['first_seen'] = (unique_prefix_origin_history['first_seen'] - datetime.datetime(1970,1,1)).dt.total_seconds().astype(int)
-
         asns = self.Conflict_Identifier.get_asn_list()
         if type(asns[0]) is not int:
             asns = [a['asn'] for a in asns]
