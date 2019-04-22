@@ -47,6 +47,8 @@ class BGP_Forecast_Modules():
 
     def set_config(self,config):
         self.config = config
+        with open('config.ini', 'w') as configfile:
+            self.config.write(configfile)
         return
 
         # Download and Store ROAs
