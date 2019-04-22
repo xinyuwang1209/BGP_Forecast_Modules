@@ -3,19 +3,16 @@ setup.py - a setup script
 Author: Xinyu Wang
 '''
 
-try:
-    from setuptools import setup
-except ImportError:
-	from distutils.core import setup
+from setuptools import setup, find_packages
 
 import os
 import sys
-import BGP_Forecast_Modules
+# import BGP_Forecast_Modules
 
 try:
 	setup(
-		name=BGP_Forecast_Modules.__name__,
-		version=BGP_Forecast_Modules.__version__,
+		name='BGP_Forecast_Modules',
+		version='BGP_Forecast_Modules',
 		author='Xinyu Wang',
 		author_email='xinyuwang1209@gmail.com',
 		description = ("BGP Forecast Project."),
@@ -30,7 +27,7 @@ try:
 			'Programming Language :: Python :: 3'
 		],
 		keywords=['Xinyu, xinyu, pypi, package, rpki'],
-		packages=['BGP_Forecast_Modules'],
+		packages=find_packages(include=['BGP_Forecast_Modules', 'BGP_Forecast_Modules.*']),
 		package_data = {
 			'BGP_Forecast_Modules': ['config.ini']
 		},

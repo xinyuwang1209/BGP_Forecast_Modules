@@ -5,11 +5,9 @@ import sys
 import json
 import time
 import requests
-import ipaddress
+from .Utilities import *
+from .Database import *
 
-# Import Utilities
-from ..Utilities.Database import *
-from ..Utilities.Utilities import *
 
 class ROAs_Collector:
     def __init__(self, config):
@@ -41,16 +39,6 @@ class ROAs_Collector:
     #         print_time('Counter:', counter,'ROAs is not ready. (code:',status,')')
     #         time.sleep(120)
 
-
-
-    def get_ROAs_df(self,file):
-        df = pd.DataFrame(file)
-        df.rename(columns={'asn':'origin'},inplace=True)
-        df = df[['prefix','origin','length']]
-        df['prefix'] = df['prefix'].apply(ipaddress.ip_network)
-        df4 = df.loc[df['prefix'].apply(get_ipnetwork_version)==4]
-        df6 = df.loc[df['prefix'].apply(get_ipnetwork_version)==6]
-        return df4,df6
 
     def download_ROAs(self):
         # Reading ROAs from json format

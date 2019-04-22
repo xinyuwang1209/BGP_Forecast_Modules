@@ -12,10 +12,17 @@ import ipaddress as ip
 import multiprocessing as mp
 from urllib.parse import quote
 
-# Import Utilities
-from ..Utilities.Database import *
-from ..Utilities.Utilities import *
-
+# Database access module import
+# dir_db = 'Database/'
+# path = os.path.abspath(__file__)
+# # print(path)
+# path_db = path.split('/')[:-2]
+# path_db.append(dir_db)
+# path_db = '/'.join(path_db)
+# # print(path_db)
+# sys.path.insert(0, path_db)
+from .Database import *
+from .Utilities import *
 
 class Conflict_Identifier:
     def __init__(self,config):
@@ -205,7 +212,7 @@ class Conflict_Identifier:
                 ADD COLUMN IF NOT EXISTS invalid_length boolean default false,
                 ADD COLUMN IF NOT EXISTS invalid_asn boolean default false,
                 ADD COLUMN IF NOT EXISTS hijack boolean default false,
-                ADD COLUMN IF NOT EXISTS first_seen timestamp default now(),
+                ADD COLUMN IF NOT EXISTS first_seen ''' + timestamp + ''' default now(),
                 DROP COLUMN IF EXISTS ann_id,
                 DROP COLUMN IF EXISTS priority;'''
         else:
@@ -215,7 +222,7 @@ class Conflict_Identifier:
                 ADD COLUMN IF NOT EXISTS invalid_length boolean default false,
                 ADD COLUMN IF NOT EXISTS invalid_asn boolean default false,
                 ADD COLUMN IF NOT EXISTS hijack boolean default false,
-                ADD COLUMN IF NOT EXISTS first_seen timestamp default now(),
+                ADD COLUMN IF NOT EXISTS first_seen ''' + timestamp + ''' default now(),
                 DROP COLUMN IF EXISTS ann_id,
                 DROP COLUMN IF EXISTS priority;'''
         self.sql_operation(sql)

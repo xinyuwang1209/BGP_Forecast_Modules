@@ -1,20 +1,6 @@
 #!/usr/bin/env python3
-
-import os
-import sys
-import time
-import pathos
-import pandas as pd
-import multiprocessing
-import numpy as np
-import ipaddress as ip
-import psycopg2
-import subprocess
-import configparser
-from psycopg2.extras        import RealDictCursor
-
+ # import os import sys import time import datetime import pathos import pandas as pd import multiprocessing import numpy as np import ipaddress as ip import psycopg2 import subprocess import configparser from psycopg2.extras        import RealDictCursorjjjjjjjjjjjjjjjjhmnjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj
 # Import Modules
-from .ROAs_Collector        import ROAs_Collector
 from .Conflict_Identifier   import Conflict_Identifier
 from .Prefix_Origin 		import Prefix_Origin
 from .Conflict_Classifier 	import Conflict_Classifier
@@ -29,7 +15,6 @@ class What_If_Analysis_Controller():
         self.config = config
 
         # Initialize each module
-        self.ROAs_Collector         = ROAs_Collector(self.config)
         self.Conflict_Identifier    = Conflict_Identifier(self.config)
         self.Prefix_Origin          = Prefix_Origin(self.config)
         self.Conflict_Classifier    = Conflict_Classifier(self.config)
@@ -114,6 +99,7 @@ class What_If_Analysis_Controller():
         # ns.asn = asn
         hijack = self.Prefix_Origin.get_hijack()[['prefix','origin']]
         unique_prefix_origin_history = self.Prefix_Origin.get_unique_prefix_origin_history()
+        unique_prefix_origin_history['first_seen'] = (unique_prefix_origin_history['first_seen'] - datetime.datetime(1970,1,1)).dt.total_seconds().astype(int)
         asns = self.Conflict_Identifier.get_asn_list()
         if type(asns[0]) is not int:
             asns = [a['asn'] for a in asns]
@@ -121,9 +107,11 @@ class What_If_Analysis_Controller():
         for asn in asns:
             args.append([asn,hijack,unique_prefix_origin_history])
         # p = Process(target=worker, args=(ns, work_unit))
+        ncpu = multiprocessing.cpu_count()
+        print_time('[What If Analysis Evaluator] Starts multiprocessing.')
         pool = pathos.multiprocessing.ProcessingPool(ncpu).map
         pool(self.analyze_one_asn_memory,args)
-        return ns.unique_prefix_origin_history
+        return
 
     def analyze_all_asn_db(self):
         asns = self.Conflict_Identifier.get_asn_list()
@@ -131,9 +119,10 @@ class What_If_Analysis_Controller():
         if type(asns[0]) is not int:
             asns = [a['asn'] for a in asns]
         ncpu = multiprocessing.cpu_count()
-        pool = pathos.multiprocessing.ProcessingPool(ncpu).map
-        pool(self.analyze_one_asn_db,asns)
-
+        pool = pathos.multiprocessing.ProcessingPool(ncpu).amap
+        results = pool(self.analyze_one_asn_db,asns)
+        while not results.ready():
+            time.sleep(5); print(".", end=' ')
         # accu = 0
         # for i in range(len(asns)):
         #     start_time = time.time()
@@ -145,8 +134,33 @@ class What_If_Analysis_Controller():
         return
     #
 
-    def analyze_one_asn_db(self,args):
-        asn,hijack,unique_prefix_origin_history=self.args
+    def analyze_one_asn_memory(self,args):
+        asn,hijack,unique_prefix_origin_history=args
+        print_time('[run_What_If_Analysis] Starts on AS:',asn)
+        start_time = time.time()
+
+        prefix_origin = self.Conflict_Identifier.get_prefix_origin_query(asn)
+
+        # Init hijack column
+        # prefix_origin['hijack'] = False
+
+        # Update hijack column
+        # prefix_origin['hijack'] = False
+
+        # Init first_seen column
+        # prefix_origin['first_seen'] = False
+        cols = ['prefix', 'origin']
+
+        prefix_origin.join(unique_prefix_origin_history.set_index(cols), on=cols)
+
+        # Update first_seen column
+        # prefix_origin[''] = False
+        # df.loc[df.Name.isin(df1.Name), ['Nonprofit', 'Education']] = df1[['Nonprofit', 'Education']].values
+
+        print_time('[run_What_If_Analysis] Completed, elapsed time:',str(datetime.timedelta(seconds=time.time()-start_time))[:-6])
+
+        return
+
     def analyze_one_asn_db(self,asn,drop_table=True):
         start_time_total = time.time()
         procedure = 0

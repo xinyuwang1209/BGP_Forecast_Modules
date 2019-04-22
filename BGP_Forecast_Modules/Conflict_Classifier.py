@@ -19,13 +19,9 @@ import pandas as pd
 import pathos.multiprocessing as mp
 import logging
 
-# Import Utilities
-from ..Utilities.Database import *
-from ..Utilities.Utilities import *
-<<<<<<< HEAD
+from .Database import *
+from .Utilities import *
 
-=======
->>>>>>> 266185e993c968b7c62a896859ccf06495378a2f
 
 # We denote all the BGP announcements as A
 # we denote a BGP announcement as a

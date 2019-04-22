@@ -3,7 +3,9 @@ import datetime
 import random
 import pandas as pd
 import numpy as np
-from .Database import Database as DB
+import configparser
+import ipaddress
+# from .Database import Database as DB
 
 
 
@@ -12,6 +14,10 @@ import signal
 import sys
 import os
 import time
+
+
+def get_ipnetwork_version(ipnetwork):
+    return ipnetwork.version
 
 # redefine process pool via inheritance
 import multiprocess.context as context
@@ -178,17 +184,26 @@ def print_time(*args):
     print(str(datetime.datetime.now())[:-7],*args)
     return
 
-if __name__ == "__main__":
-    print(random_prefix_generator())
-    print(random_asn_generator())
-    print(random_boolean_generator())
 
-    # Test Time_Parser
-    time_shift = "520w:1h:1s"
-    print(time_parser_epoch(time_shift))
-    time_current = time.time()
-    print(datetime.datetime.fromtimestamp(time_current))
-    print(datetime.datetime.fromtimestamp(time_current - time_parser_epoch(time_shift)))
-    print(time_parser_datetime(time_shift))
+def get_config():
+    config = configparser.ConfigParser()
+    config_file = '/'.join(os.path.abspath(os.path.dirname(__file__)).split('/')[:-1]) + '/config.ini'
+    config.read(config_file)
+    return config
 
-    print(random_prefix_origin_generator(1,has_asn=True,fix_asn=13335,special_one=True))
+# if __name__ == "__main__":
+    # config = get_config()
+    # print(config.sections())
+    # print(random_prefix_generator())
+    # print(random_asn_generator())
+    # print(random_boolean_generator())
+    #
+    # # Test Time_Parser
+    # time_shift = "520w:1h:1s"
+    # print(time_parser_epoch(time_shift))
+    # time_current = time.time()
+    # print(datetime.datetime.fromtimestamp(time_current))
+    # print(datetime.datetime.fromtimestamp(time_current - time_parser_epoch(time_shift)))
+    # print(time_parser_datetime(time_shift))
+    #
+    # print(random_prefix_origin_generator(1,has_asn=True,fix_asn=13335,special_one=True))
