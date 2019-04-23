@@ -105,19 +105,57 @@ app.layout = html.Div([
 
 
 
+def
 
 
 
 
+@app.callback(Output(policies[0], 'figure'),
+              [Input('interval-component', 'n_intervals')])
+def update_graph_live(n):
+    satellite = Orbital('TERRA')
+    data = {
+        'time': [],
+        'Latitude': [],
+        'Longitude': [],
+        'Altitude': []
+    }
 
-@app.callback(
-    dash.dependencies.Output('Dendro-Left', 'figure'),
-    [dash.dependencies.Input('Scatter-Left', 'relayoutData')])
-def update_graph(chem_dropdown_left, data_type, yaxis_type):
-    return scatter_plot( markers=chem_dropdown_left,data_type=data_type)
+    # Collect some data
+    for i in range(180):
+        time = datetime.datetime.now() - datetime.timedelta(seconds=i*20)
+        lon, lat, alt = satellite.get_lonlatalt(
+            time
+        )
+        data['Longitude'].append(lon)
+        data['Latitude'].append(lat)
+        data['Altitude'].append(alt)
+        data['time'].append(time)
 
+    # Create the graph with subplots
+    fig = plotly.tools.make_subplots(rows=2, cols=1, vertical_spacing=0.2)
+    fig['layout']['margin'] = {
+        'l': 30, 'r': 10, 'b': 30, 't': 10
+    }
+    fig['layout']['legend'] = {'x': 0, 'y': 1, 'xanchor': 'left'}
 
+    fig.append_trace({
+        'x': data['time'],
+        'y': data['Altitude'],
+        'name': 'Altitude',
+        'mode': 'lines+markers',
+        'type': 'scatter'
+    }, 1, 1)
+    fig.append_trace({
+        'x': data['Longitude'],
+        'y': data['Latitude'],
+        'text': data['time'],
+        'name': 'Longitude vs Latitude',
+        'mode': 'lines+markers',
+        'type': 'scatter'
+    }, 2, 1)
 
+    return fig
 
 
 
