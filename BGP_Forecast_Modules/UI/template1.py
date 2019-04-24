@@ -137,8 +137,8 @@ def gen_df(d,dt):
                  'y': d[policy][result],
                  'type': 'Scatter',
                  'mode': 'lines+markers',
-                 'name': policy
-                 # 'line': {'shape': 'spline', 'smoothing': 2}
+                 'name': policy,
+                 'line': {'shape': 'spline', 'smoothing': 2}
                  }
             )
     return df_dict
@@ -158,25 +158,29 @@ def update_data(time_start,time_end,d):
 hijackedAndBlocked =        dcc.Graph(
                                 id=results[0],
                                 figure = {'data': df_dict[results[0]],
-                                           'layout': {'title': results[0]}}
+                                           'layout': {'title': results[0]}},
+                                animate=True
                             )
 
 hijackedButNotBlocked =     dcc.Graph(
                                 id=results[1],
                                 figure = {'data': df_dict[results[1]],
-                                           'layout': {'title': results[1]}}
+                                           'layout': {'title': results[1]}},
+                                animate=True
                             )
 
 neitherBlockedNorHijacked = dcc.Graph(
                                 id=results[2],
                                 figure = {'data': df_dict[results[2]],
-                                           'layout': {'title': results[2]}}
+                                           'layout': {'title': results[2]}},
+                                animate=True
                             )
 
 notHijackedButBlocked =     dcc.Graph(
                                 id=results[3],
                                 figure = {'data': df_dict[results[3]],
-                                           'layout': {'title': results[3]}}
+                                           'layout': {'title': results[3]}},
+                                animate=True
                             )
 
 app.layout = html.Div([
