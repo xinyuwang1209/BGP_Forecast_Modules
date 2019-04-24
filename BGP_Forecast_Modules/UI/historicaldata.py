@@ -10,4 +10,4 @@ from template1 import app
 #from test import app
 app.config.requests_pathname_prefix = ''
 server = app.server
-application = app.server
+application = app
