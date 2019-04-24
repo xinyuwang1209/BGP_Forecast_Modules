@@ -23,7 +23,7 @@ app = dash.Dash(__name__)
 server = app.server
 # asns = pd.read_csv('/var/www/html/vi/asns.csv')
 
-start_update = False
+updated = False
 
 policies = ['deprefer', 'rov', 'simpleTimeHeuristic']
 policies_checklist = [{'label': policy, 'value': policy} for policy in policies]
@@ -36,6 +36,8 @@ results = ['hijackedAndBlocked', 'hijackedButNotBlocked', 'neitherBlockedNorHija
 
 def gen_url(url_prefix,asn,length):
     return '/'.join([url_prefix,str(asn),str(length)]) + '/'
+
+
 asn = 13335
 # fake utilities
 fake = True
@@ -46,7 +48,7 @@ time_end = time_range
 
 def fake_poly_generator(time_start,time_end,data_range=100,upper_bound = 40000):
     # random.seed(int(time.time()))
-    mode = random.randint(0,2)
+    mode = random.randint(2,2)
     lst = []
     a = random.randint(-data_range, data_range)
     b = random.randint(-data_range, data_range)
@@ -68,7 +70,7 @@ def fake_poly_generator(time_start,time_end,data_range=100,upper_bound = 40000):
         rate = (maximum - rand_avg) // rand
     else:
         rate = (rand_avg) // rand
-    lst = [a//rate for a in lst]
+    lst = [a//max(rate,1) for a in lst]
     noise_range = (max(lst) - min(lst)) // 10 + 10
     # print(random.randint(-noise_range, noise_range))
     for i in range(time_end-time_start):
@@ -97,16 +99,17 @@ def data_time_generator(time_start,time_end):
 if fake:
     data = fake_data_generator(time_start,time_end)
     data_time = data_time_generator(time_start,time_end)
+    data_time_part = data_time
     data_part = data
 
 # def get_data(asn):
 range_mark = {}
 for i in range(time_range):
-    if i % (time_range // 8) == 0:
+    if i % (time_range // 6) == 0:
         range_mark[i] = data_time[i]
     else:
         range_mark[i] = ''
-range_mark[time_range-1] = data_time[time_range-1]
+# range_mark[time_range-1] = data_time[time_range-1]
 
 
     # print(data)
@@ -143,10 +146,13 @@ df_dict = gen_df(data,data_time)
 
 
 def update_data(time_start,time_end,d):
+    new_d = {}
     for policy in policies:
+        current = {}
         for result in results:
-            d[policy][result] = d[policy][result][time_start:time_end]
-    return d
+            current[result] = d[policy][result][time_start:time_end]
+            new_d[policy] = current
+    return new_d
 
 
 hijackedAndBlocked =        dcc.Graph(
@@ -177,7 +183,9 @@ app.layout = html.Div([
             dcc.Dropdown(id='dropdown',
                          options=asns_dropdown,
                          multi=True,
-                         value=[13335,1]),
+                         value=[13335,1],
+                         placeholder='Select an ASN'),
+            html.Br(),
             html.Div([dcc.RangeSlider(
                 id='rangeslider',
                 min=0,
@@ -186,6 +194,7 @@ app.layout = html.Div([
                 marks=range_mark,
                 value=[0, time_range-1]
             ),],style={'height':'50px','width':'90%','display': 'block','margin-right': 'auto','margin-left': 'auto'}),
+            html.Br(),
             hijackedAndBlocked,
             hijackedButNotBlocked,
             neitherBlockedNorHijacked,
@@ -196,51 +205,55 @@ app.layout = html.Div([
 @app.callback(Output(results[0], 'figure'),
               [Input('dropdown', 'value'),Input('rangeslider', 'value')])
 def ddupdate0(value1,value2):
+    global updated
+    updated = False
     global time_start
     global time_end
     print('values:',value2)
     a , b = value2
     time_start = a
     time_end = b+1
-    print('times',time_start,time_end)
-
+    print('values:',a)
+    print('values:',b)
     global data
     global data_part
     global data_time
+    global data_time_part
     # data_time = data_time_generator(time_end,time_end)
 
     global asn
     if asn == value1:
+        data_time_part = data_time[time_start:time_end]
         data_part = update_data(time_start,time_end,data)
+        print(len(data[policies[0]][results[0]]))
+        print(len(data_part[policies[0]][results[0]]))
     else:
         data = fake_data_generator(time_start,time_end)
         data_part = data
         asn = value1
 
     global df_dict
-    df_dict = gen_df(data_part,data_time[time_start:time_end])
+    df_dict = gen_df(data_part,data_time_part)
+    updated = True
     return {'data': df_dict[results[0]],
                'layout': {'title': results[0]}}
 
 
 @app.callback(Output(results[1], 'figure'),
-              [Input('dropdown', 'value'),Input('rangeslider', 'value')])
-def ddupdate1(value1,value2):
-    global df_dict
+              [Input(results[0], 'figure')])
+def ddupdate1(value1):
     return {'data': df_dict[results[1]],
                'layout': {'title': results[1]}}
 
 @app.callback(Output(results[2], 'figure'),
-              [Input('dropdown', 'value'),Input('rangeslider', 'value')])
-def ddupdate2(value1,value2):
-    global df_dict
+              [Input(results[1], 'figure')])
+def ddupdate1(value1):
     return {'data': df_dict[results[2]],
                'layout': {'title': results[2]}}
 
 @app.callback(Output(results[3], 'figure'),
-              [Input('dropdown', 'value'),Input('rangeslider', 'value')])
-def ddupdate3(value1,value2):
-    global df_dict
+              [Input(results[2], 'figure')])
+def ddupdate1(value1):
     return {'data': df_dict[results[3]],
                'layout': {'title': results[3]}}
 
@@ -292,7 +305,6 @@ def ddupdate3(value1,value2):
 #
 #     return fig
 #
-
 
 
 external_css = ["https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css",
