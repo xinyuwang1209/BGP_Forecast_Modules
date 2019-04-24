@@ -160,28 +160,38 @@ hijackedAndBlocked =        dcc.Graph(
                                 figure = {'data': df_dict[results[0]],
                                            'layout': {'title': results[0],
                                                       'xaxis': {'autorange': True},
-                                                      'yaxis': {'autorange': True}}},
+                                                      'yaxis': {'autorange': True},
+                                                      'legend':dict(orientation="h")}},
                                 animate=True
                             )
 
 hijackedButNotBlocked =     dcc.Graph(
                                 id=results[1],
                                 figure = {'data': df_dict[results[1]],
-                                           'layout': {'title': results[1]}},
+                                           'layout': {'title': results[0],
+                                                      'xaxis': {'autorange': True},
+                                                      'yaxis': {'autorange': True},
+                                                      'legend':dict(orientation="h")}},
                                 animate=True
                             )
 
 neitherBlockedNorHijacked = dcc.Graph(
                                 id=results[2],
                                 figure = {'data': df_dict[results[2]],
-                                           'layout': {'title': results[2]}},
+                                           'layout': {'title': results[0],
+                                                      'xaxis': {'autorange': True},
+                                                      'yaxis': {'autorange': True},
+                                                      'legend':dict(orientation="h")}},
                                 animate=True
                             )
 
 notHijackedButBlocked =     dcc.Graph(
                                 id=results[3],
                                 figure = {'data': df_dict[results[3]],
-                                           'layout': {'title': results[3]}},
+                                           'layout': {'title': results[0],
+                                                      'xaxis': {'autorange': True},
+                                                      'yaxis': {'autorange': True},
+                                                      'legend':dict(orientation="h")}},
                                 animate=True
                             )
 
@@ -201,10 +211,12 @@ app.layout = html.Div([
                 value=[0, time_range-1]
             ),],style={'height':'50px','width':'90%','display': 'block','margin-right': 'auto','margin-left': 'auto'}),
             html.Br(),
-            hijackedAndBlocked,
-            hijackedButNotBlocked,
-            neitherBlockedNorHijacked,
-            notHijackedButBlocked,
+            html.Div([hijackedAndBlocked,
+                      hijackedButNotBlocked
+                      ],style={'width': '49%', 'display': 'inline-block'}),
+            html.Div([neitherBlockedNorHijacked,
+                      notHijackedButBlocked,
+                      ],style={'width': '49%', 'display': 'inline-block'}),
             ],style={'width':'100%', 'height':'100%'})
 
 
