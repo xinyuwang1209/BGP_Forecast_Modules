@@ -30,6 +30,7 @@ policies_checklist = [{'label': policy, 'value': policy} for policy in policies]
 asns = pd.read_csv('extrapolation_asns.csv').values
 asns_dropdown =    [{'label': asn, 'value': asn} for asn in asns]
 results = ['hijackedAndBlocked', 'hijackedButNotBlocked', 'neitherBlockedNorHijacked', 'notHijackedButBlocked']
+results_name = ['Hijacked And Blocked', 'Hijacked But Not Blocked', 'Neither Blocked Nor Hijacked', 'Not Hijacked But Blocked']
 
 
 # api utilities
@@ -158,7 +159,8 @@ def update_data(time_start,time_end,d):
 hijackedAndBlocked =        dcc.Graph(
                                 id=results[0],
                                 figure = {'data': df_dict[results[0]],
-                                           'layout': {'title': results[0],
+                                           'layout': {'title': results_name[0],
+                                           'font': dict(family='Courier New, monospace', size=12, color='#7f7f7f'),
                                                       'xaxis': {'autorange': True},
                                                       'yaxis': {'autorange': True},
                                                       'legend':dict(orientation="h")}},
@@ -168,7 +170,8 @@ hijackedAndBlocked =        dcc.Graph(
 hijackedButNotBlocked =     dcc.Graph(
                                 id=results[1],
                                 figure = {'data': df_dict[results[1]],
-                                           'layout': {'title': results[0],
+                                           'layout': {'title': results_name[1],
+                                           'font': dict(family='Courier New, monospace', size=12, color='#7f7f7f'),
                                                       'xaxis': {'autorange': True},
                                                       'yaxis': {'autorange': True},
                                                       'legend':dict(orientation="h")}},
@@ -178,7 +181,8 @@ hijackedButNotBlocked =     dcc.Graph(
 neitherBlockedNorHijacked = dcc.Graph(
                                 id=results[2],
                                 figure = {'data': df_dict[results[2]],
-                                           'layout': {'title': results[0],
+                                           'layout': {'title': results_name[2],
+                                           'font': dict(family='Courier New, monospace', size=12, color='#7f7f7f'),
                                                       'xaxis': {'autorange': True},
                                                       'yaxis': {'autorange': True},
                                                       'legend':dict(orientation="h")}},
@@ -188,7 +192,8 @@ neitherBlockedNorHijacked = dcc.Graph(
 notHijackedButBlocked =     dcc.Graph(
                                 id=results[3],
                                 figure = {'data': df_dict[results[3]],
-                                           'layout': {'title': results[0],
+                                           'layout': {'title': results_name[3],
+                                           'font': dict(family='Courier New, monospace', size=12, color='#7f7f7f'),
                                                       'xaxis': {'autorange': True},
                                                       'yaxis': {'autorange': True},
                                                       'legend':dict(orientation="h")}},
@@ -254,7 +259,7 @@ def ddupdate0(value1,value2):
     df_dict = gen_df(data_part,data_time_part)
     updated = True
     return {'data': df_dict[results[0]],
-               'layout': {'title': results[0],
+               'layout': {'title': results_name[0],
                           'xaxis': {'autorange': True},
                           'yaxis': {'autorange': True}}}
 
@@ -263,19 +268,19 @@ def ddupdate0(value1,value2):
               [Input(results[0], 'figure')])
 def ddupdate1(value1):
     return {'data': df_dict[results[1]],
-               'layout': {'title': results[1]}}
+               'layout': {'title': results_name[1]}}
 
 @app.callback(Output(results[2], 'figure'),
               [Input(results[1], 'figure')])
 def ddupdate1(value1):
     return {'data': df_dict[results[2]],
-               'layout': {'title': results[2]}}
+               'layout': {'title': results_name[2]}}
 
 @app.callback(Output(results[3], 'figure'),
               [Input(results[2], 'figure')])
 def ddupdate1(value1):
     return {'data': df_dict[results[3]],
-               'layout': {'title': results[3]}}
+               'layout': {'title': results_name[3]}}
 
 #
 # @app.callback(Output(policies[0], 'figure'),
