@@ -69,7 +69,7 @@ def fake_poly_generator(time_start,time_end,data_range=100,upper_bound = 40000):
     else:
         rate = (rand_avg) // rand
     lst = [a//rate for a in lst]
-    noise_range = (max(lst) - min(lst)) // 10 + 100
+    noise_range = (max(lst) - min(lst)) // 10 + 10
     # print(random.randint(-noise_range, noise_range))
     for i in range(time_end-time_start):
         lst[i] += random.randint(-noise_range, noise_range)
