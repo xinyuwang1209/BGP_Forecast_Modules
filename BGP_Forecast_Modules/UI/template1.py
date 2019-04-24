@@ -70,7 +70,7 @@ def fake_poly_generator(time_start,time_end,data_range=100,upper_bound = 40000):
     if upper_bound//2 < rand_avg:
         rate = (maximum - rand_avg) // rand
     else:
-        rate = (rand_avg) // rand
+        rate = (rand_avg) // max(rand,1)
     lst = [a//max(rate,1) for a in lst]
     noise_range = (max(lst) - min(lst)) // 10 + 10
     # print(random.randint(-noise_range, noise_range))
@@ -283,6 +283,12 @@ def ddupdate1(value1):
                'layout': {'title': results_name[3]}}
 
 #
+
+
+
+# @app.callback(Output('dropdown', 'value'), [Input('dropdown', 'options')])
+# def callback(value):
+#     return ""
 # @app.callback(Output(policies[0], 'figure'),
 #               [Input('interval-component', 'n_intervals')])
 # def update_graph_live(n):
