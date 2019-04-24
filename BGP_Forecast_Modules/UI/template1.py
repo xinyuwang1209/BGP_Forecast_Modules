@@ -158,7 +158,9 @@ def update_data(time_start,time_end,d):
 hijackedAndBlocked =        dcc.Graph(
                                 id=results[0],
                                 figure = {'data': df_dict[results[0]],
-                                           'layout': {'title': results[0]}},
+                                           'layout': {'title': results[0],
+                                                      'xaxis': {'autorange': True},
+                                                      'yaxis': {'autorange': True}}},
                                 animate=True
                             )
 
@@ -232,15 +234,17 @@ def ddupdate0(value1,value2):
         print(len(data[policies[0]][results[0]]))
         print(len(data_part[policies[0]][results[0]]))
     else:
-        data = fake_data_generator(time_start,time_end)
-        data_part = data
+        data = fake_data_generator(0,time_range)
+        data_part = update_data(time_start,time_end,data)
         asn = value1
 
     global df_dict
     df_dict = gen_df(data_part,data_time_part)
     updated = True
     return {'data': df_dict[results[0]],
-               'layout': {'title': results[0]}}
+               'layout': {'title': results[0],
+                          'xaxis': {'autorange': True},
+                          'yaxis': {'autorange': True}}}
 
 
 @app.callback(Output(results[1], 'figure'),
